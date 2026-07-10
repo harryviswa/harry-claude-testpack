@@ -7,4 +7,5 @@ src/claude_test_scaffold.egg-info/SOURCES.txt
 src/claude_test_scaffold.egg-info/dependency_links.txt
 src/claude_test_scaffold.egg-info/entry_points.txt
 src/claude_test_scaffold.egg-info/top_level.txt
+src/claude_test_scaffold/templates/automation_runner.py
 tests/test_cli.py

@@ -22,3 +22,6 @@ This workspace contains a modular test automation scaffold for UI and API testin
 - SOLID-oriented design
 - CI/CD-ready structure
 - Easy extension for new UI flows and API endpoints
+
+
+pip install git+https://github.com/harryviswa/harry-claude-testpack.git

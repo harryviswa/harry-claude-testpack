@@ -30,6 +30,96 @@ def scaffold_project(target_dir: Path | str) -> None:
     )
 
     write_file(
+        target / ".claude" / "commands" / "generate-report.md",
+        """
+        # /generate-report
+
+        Generate a concise automation report after each test run.
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "commands" / "run-ui-tests.md",
+        """
+        # /run-ui-tests
+
+        Run the Playwright UI test suite for the current repository.
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "commands" / "run-api-tests.md",
+        """
+        # /run-api-tests
+
+        Run the pytest-based API test suite for the current repository.
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "commands" / "generate-ui-test.md",
+        """
+        # /generate-ui-test
+
+        Create a Playwright-based UI test from a target page or user flow.
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "commands" / "generate-api-test.md",
+        """
+        # /generate-api-test
+
+        Create a pytest-based API test for an endpoint or contract.
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "hooks" / "automation-lifecycle.md",
+        """
+        # Automation Lifecycle Hooks
+
+        - beforeEach: prepare fixtures and environment state
+        - afterEach: capture logs or screenshots
+        - afterAll: generate a summary report
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "hooks" / "reporting" / "report-generator.py",
+        """
+        from pathlib import Path
+        from datetime import datetime
+
+        def generate_report(test_results=None, output_path="artifacts/automation-report.md"):
+            output = Path(output_path)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(
+                f"# Automation Report\\n\\n- Generated: {datetime.utcnow().isoformat()}\\n- Passed: {test_results.get('passed', 0) if test_results else 0}\\n- Failed: {test_results.get('failed', 0) if test_results else 0}\\n",
+                encoding="utf-8",
+            )
+            return output
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "CLAUDE.md",
+        """
+        # Claude Automation Setup
+
+        Commands:
+        - /add-test
+        - /generate-ui-test
+        - /generate-api-test
+        - /generate-report
+
+        Hooks:
+        - automation-lifecycle
+        - reporting/report-generator
+        """,
+    )
+
+    write_file(
         target / ".claude" / "skills" / "ui-navigation" / "SKILL.md",
         """
         ---
@@ -65,6 +155,26 @@ def scaffold_project(target_dir: Path | str) -> None:
         pytest>=8.0.0
         requests>=2.31.0
         pytest-cov>=4.0.0
+        """,
+    )
+
+    write_file(
+        target / "scripts" / "run_automation.py",
+        """
+        from pathlib import Path
+        import subprocess
+        import sys
+
+        def main() -> int:
+            root = Path(__file__).resolve().parents[1]
+            for target in ["api_tests", "tests"]:
+                result = subprocess.run([sys.executable, "-m", "pytest", "-q", target], cwd=root)
+                if result.returncode != 0:
+                    return result.returncode
+            return 0
+
+        if __name__ == "__main__":
+            raise SystemExit(main())
         """,
     )
 

@@ -1,18 +1,21 @@
 ---
 name: test-data-setup
-description: Reusable helpers for generating deterministic test data and fixtures.
+description: Claude-native guidance for deterministic test data and fixtures.
 ---
 
-# Test Data Setup Skill
+Goal: Create isolated, reusable test data.
 
-## Purpose
-Generate realistic, isolated test data for UI and API tests.
+Inputs:
+- target scenario
+- required data shape
+- cleanup needs
 
-## Capabilities
-- Create reusable payloads
-- Build deterministic fixture data
-- Seed test state with minimal dependencies
-- Support cleanup hooks and rollback-safe setup
+Output:
+- fixtures or payload builders
+- deterministic seed data
 
-## Usage
-Use this skill when tests need user accounts, API payloads, or environment-specific seed data.
+Rules:
+- Generate minimal, deterministic fixtures.
+- Keep setup local to the test or fixture scope.
+- Reset or clean up state where needed.
+- Prefer realistic payloads over overly complex data.

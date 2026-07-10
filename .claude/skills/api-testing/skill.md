@@ -1,19 +1,22 @@
 ---
 name: api-testing
-description: Reusable pytest-based API automation skills for endpoint validation and contract testing.
+description: Claude-native pytest guidance for API test generation and execution.
 ---
 
-# API Testing Skill
+Goal: Create and maintain reliable API automation.
 
-## Purpose
-Provide reusable capabilities for endpoint calls, schema validation, payload generation, and integration assertions.
+Inputs:
+- endpoint and method
+- expected response shape
+- auth or headers if needed
 
-## Capabilities
-- Prepare API clients and request builders
-- Validate status codes and response bodies
-- Use fixtures and helpers for data setup
-- Compare responses against expected contracts
-- Support integration and smoke scenarios
+Output:
+- test module
+- helpers/fixtures
+- assertions for contract and behavior
 
-## Usage
-Use this skill when generating endpoint tests, contract tests, or integration tests for service APIs.
+Rules:
+- Prefer helpers/fixtures over inline requests.
+- Validate status codes, bodies, and schema expectations.
+- Cover one happy path and one error path per endpoint.
+- Keep tests deterministic and easy to extend.
