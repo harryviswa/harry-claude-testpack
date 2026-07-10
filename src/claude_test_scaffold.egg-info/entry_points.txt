@@ -1,0 +1,2 @@
+[console_scripts]
+claude-test-scaffold = claude_test_scaffold.cli:main
