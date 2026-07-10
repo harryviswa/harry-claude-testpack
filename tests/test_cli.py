@@ -21,3 +21,18 @@ def test_scaffold_project_creates_claude_assets(tmp_path):
     assert (target / "requirements.txt").exists()
     assert (target / "playwright" / "playwright.config.ts").exists()
     assert (target / "scripts" / "run_automation.py").exists()
+
+
+def test_scaffold_project_preserves_existing_readme_and_settings(tmp_path):
+    target = tmp_path / "demo_repo"
+    target.mkdir()
+    readme = target / "README.md"
+    settings = target / ".vscode" / "settings.json"
+    settings.parent.mkdir(parents=True)
+    readme.write_text("# Existing Project\n", encoding="utf-8")
+    settings.write_text('{"existing": true}\n', encoding="utf-8")
+
+    scaffold_project(target)
+
+    assert readme.read_text(encoding="utf-8").startswith("# Existing Project")
+    assert settings.read_text(encoding="utf-8").strip() == '{"existing": true}'

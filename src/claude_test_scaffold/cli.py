@@ -5,8 +5,10 @@ from pathlib import Path
 from textwrap import dedent
 
 
-def write_file(path: Path, content: str) -> None:
+def write_file(path: Path, content: str, overwrite: bool = True) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() and not overwrite:
+        return
     path.write_text(dedent(content).strip() + "\n", encoding="utf-8")
 
 
@@ -19,13 +21,73 @@ def scaffold_project(target_dir: Path | str) -> None:
         """
         # /add-test
 
-        Generate UI and API tests for the current repository.
+        Goal: Add or extend UI and API test automation for this repository.
 
-        ## Workflow
-        1. Inspect the existing app structure.
-        2. Create or update page objects for UI flows.
-        3. Add pytest-based API tests and helpers.
-        4. Ensure assertions are reusable and CI-friendly.
+        Inputs:
+        - target page/flow or API endpoint
+        - existing project and test structure
+        - expected behavior and acceptance criteria
+
+        Output:
+        - Playwright page object class or UI flow test
+        - pytest test class/module
+        - API helper object and fixtures
+        - reusable selectors, assertions, and setup logic
+
+        Rules:
+        - Preserve existing README and settings files.
+        - Generate page objects for UI flows.
+        - Generate helper objects for API requests and test data.
+        - Keep tests deterministic, reusable, and CI-friendly.
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "commands" / "generate-ui-test.md",
+        """
+        # /generate-ui-test
+
+        Goal: Create a Playwright UI test class and supporting page object for a user flow.
+
+        Inputs:
+        - target page or component
+        - user action and expected outcome
+        - existing app/test structure
+
+        Output:
+        - page object class with locators/actions
+        - UI test or spec file
+        - assertions for visible UI behavior
+
+        Rules:
+        - Use resilient locators and wait for stable state.
+        - Create reusable page object methods.
+        - Assert visible behavior, not internal implementation.
+        - Keep the test flow clear and modular.
+        """,
+    )
+
+    write_file(
+        target / ".claude" / "commands" / "generate-api-test.md",
+        """
+        # /generate-api-test
+
+        Goal: Create a pytest API test class and supporting request helper for an endpoint contract.
+
+        Inputs:
+        - endpoint, method, and expected status/body
+        - auth, headers, or request context
+        - existing API test conventions
+
+        Output:
+        - pytest test module or test class
+        - request helper object or fixture
+        - assertions for status, response shape, and contract
+
+        Rules:
+        - Prefer fixtures and helper objects over inline request code.
+        - Cover a happy path and one error case.
+        - Keep test data deterministic and easy to reuse.
         """,
     )
 
@@ -34,7 +96,20 @@ def scaffold_project(target_dir: Path | str) -> None:
         """
         # /generate-report
 
-        Generate a concise automation report after each test run.
+        Goal: Generate a concise automation report after each test run.
+
+        Inputs:
+        - test results and failure details
+        - generated artifacts or logs
+
+        Output:
+        - pass/fail summary
+        - key failure notes
+        - next action suggestions
+
+        Rules:
+        - Keep it concise and evidence-based.
+        - Include actionable follow-up steps.
         """,
     )
 
@@ -53,24 +128,6 @@ def scaffold_project(target_dir: Path | str) -> None:
         # /run-api-tests
 
         Run the pytest-based API test suite for the current repository.
-        """,
-    )
-
-    write_file(
-        target / ".claude" / "commands" / "generate-ui-test.md",
-        """
-        # /generate-ui-test
-
-        Create a Playwright-based UI test from a target page or user flow.
-        """,
-    )
-
-    write_file(
-        target / ".claude" / "commands" / "generate-api-test.md",
-        """
-        # /generate-api-test
-
-        Create a pytest-based API test for an endpoint or contract.
         """,
     )
 
@@ -236,6 +293,20 @@ def api_client() -> requests.Session:
         Then run:
         claude-test-scaffold /path/to/your/repo
         """,
+        overwrite=False,
+    )
+
+    write_file(
+        target / ".vscode" / "settings.json",
+        """
+        {
+          "files.exclude": {
+            "**/__pycache__": true,
+            "**/.pytest_cache": true
+          }
+        }
+        """,
+        overwrite=False,
     )
 
 
